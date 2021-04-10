@@ -35,6 +35,8 @@ sprite_files <- mapply(
     pokemon_info <- httr::content(httr::GET(link))
     sprites <- pokemon_info$sprites$versions$`generation-iv`$`heartgold-soulsilver`
     selected_sprite <- sprites[[paste0(position, "_default")]]
+    
+    download.file(selected_sprite, file.path(temp_directory, paste0("sprite_", position, ".png")))
   },
   c("front", "back"),
   sprite_links,
