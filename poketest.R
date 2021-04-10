@@ -35,8 +35,6 @@ sprite_files <- mapply(
     pokemon_info <- httr::content(httr::GET(link))
     sprites <- pokemon_info$sprites$versions$`generation-iv`$`heartgold-soulsilver`
     selected_sprite <- sprites[[paste0(position, "_default")]]
-    
-    download.file(selected_sprite, file.path(dir, paste0("sprite_", position, ".png")))
   },
   c("front", "back"),
   sprite_links,
@@ -45,19 +43,23 @@ sprite_files <- mapply(
 
 sprite1 <- png::readPNG(file.path(temp_directory, "sprite_front.png"))
 sprite2 <- png::readPNG(file.path(temp_directory, "sprite_back.png"))
-background <- png::readPNG("./background.png")
+sprite2_cropped <- sprite2[-which(rowSums(sprite2[,,4]) == 0),,]
+
+background <- png::readPNG("./scaled_background.png")
+
 # arrange onto a grid
-x <- 1:100
-y <- 1:100
+x <- (1:225)/0.75
+y <- 1:225
+
 plot_location <- file.path(temp_directory, "battle_plot.png")
-plot_location <- "~/Desktop/battle_plot.png"
 grDevices::png(plot_location)
 plot.new()
 par(mar=c(0,0,0,0))
-plot(x~y, axes = FALSE, col = NA, xlab = NA, ylab = NA, xaxs="i", yaxs="i")
-rasterImage(background, 0, 0, 100, 100)
-rasterImage(sprite2, 5, 16, 45, 56)
-rasterImage(sprite1, 55, 58, 95, 98)
+plot(y~x, axes = FALSE, col = NA, xlab = NA, ylab = NA, xaxs="i", yaxs="i")
+
+rasterImage(background, 1, 1, 300, 225, interpolate = FALSE)
+rasterImage(sprite2_cropped, 35, 54, 115, 54 + dim(sprite2_cropped)[1], interpolate = FALSE)
+rasterImage(sprite1, 170, 130, 250, 210, interpolate = FALSE)
 grDevices::dev.off()
 
 ## set up twitter auth ====
