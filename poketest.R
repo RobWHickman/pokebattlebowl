@@ -77,6 +77,8 @@ second_pokemon_stat_total <- sapply(
 
 equivalent_level <- which(second_pokemon_stat_total >= sum(first_pokemon_adjusted_stats))[1]
 chosen_second_level <- equivalent_level + sample(-5:5, 1)
+if(chosen_second_level > 99) chosen_second_level <- 99
+
 second_pokemon_adjusted_stats <- mapply(
   increases_stats, 
   second_pokemon_stat_values, 
@@ -128,8 +130,8 @@ rasterImage(background, 1, 1, 300, 225, interpolate = FALSE)
 rasterImage(sprite2_cropped, 35, 54, 115, 54 + dim(sprite2_cropped)[1], interpolate = FALSE)
 rasterImage(sprite1, 170, 130, 250, 210, interpolate = FALSE)
 
-text(10, 187, paste0(pokemon_names[1], " Lv", first_level), pos = 4, cex = 2)
-text(180, 97.5, paste0(pokemon_names[2], " Lv", chosen_second_level), pos = 4, cex = 2)
+text(10, 187, paste0(toupper(pokemon_names[1]), " Lv", first_level), pos = 4, cex = 2)
+text(180, 97.5, paste0(toupper(pokemon_names[2]), " Lv", chosen_second_level), pos = 4, cex = 2)
 
 grDevices::dev.off()
 
