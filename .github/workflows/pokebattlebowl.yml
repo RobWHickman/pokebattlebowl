@@ -2,10 +2,10 @@ name: pokebattlebowl
 
 on:
   schedule:
-    - cron: '10/10 * * * * '  # every half hour
+    - cron: '10/10 * * * * '
 
 jobs:
-  testpost:
+  pokepost:
     runs-on: macOS-latest
     env:
       TWITTER_CONSUMER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
