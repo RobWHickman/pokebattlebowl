@@ -45,16 +45,19 @@ sprite_files <- mapply(
 
 sprite1 <- png::readPNG(file.path(temp_directory, "sprite_front.png"))
 sprite2 <- png::readPNG(file.path(temp_directory, "sprite_back.png"))
-
+background <- png::readPNG("./background.png")
 # arrange onto a grid
 x <- 1:100
 y <- 1:100
 plot_location <- file.path(temp_directory, "battle_plot.png")
+plot_location <- "~/Desktop/battle_plot.png"
 grDevices::png(plot_location)
 plot.new()
-plot(x~y, axes = FALSE, col = NA, xlab = NA, ylab = NA)
-rasterImage(sprite2, 10, 10, 50, 50)
-rasterImage(sprite1, 50, 50, 90, 90)
+par(mar=c(0,0,0,0))
+plot(x~y, axes = FALSE, col = NA, xlab = NA, ylab = NA, xaxs="i", yaxs="i")
+rasterImage(background, 0, 0, 100, 100)
+rasterImage(sprite2, 5, 16, 45, 56)
+rasterImage(sprite1, 55, 58, 95, 98)
 grDevices::dev.off()
 
 ## set up twitter auth ====
