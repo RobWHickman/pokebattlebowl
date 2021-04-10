@@ -1,8 +1,6 @@
 name: pokebattlebowl
 
-on:
-  schedule:
-    - cron: '10,20,30,40,50 * * * * '
+on: push
 
 jobs:
   pokepost:
