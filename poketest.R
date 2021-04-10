@@ -66,7 +66,7 @@ twitter_token <- rtweet::create_token(
   access_secret =   Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 )
 
-tweettext <- paste0(pokemon_names[1], " vs. ", pokemon_names[1], "!!!")
+tweettext <- paste0(pokemon_names[2], " vs. ", pokemon_names[1], "!!!")
 
 rtweet::post_tweet(
   status = tweettext,
