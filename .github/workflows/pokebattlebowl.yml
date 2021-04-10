@@ -18,4 +18,4 @@ jobs:
       - name: Install rtweet package
         run: Rscript -e 'install.packages("rtweet", dependencies = TRUE)'
       - name: Create and post tweet
-        run: Rscript -e "sum(1, 1)"
+        run: Rscript testpost.R
