@@ -52,14 +52,20 @@ x <- (1:225)/0.75
 y <- 1:225
 
 plot_location <- file.path(temp_directory, "battle_plot.png")
+#plot_location <- file.path("~/Desktop", "battle_plot2.png")
 grDevices::png(plot_location)
 plot.new()
 par(mar=c(0,0,0,0))
 plot(y~x, axes = FALSE, col = NA, xlab = NA, ylab = NA, xaxs="i", yaxs="i")
 
+
 rasterImage(background, 1, 1, 300, 225, interpolate = FALSE)
 rasterImage(sprite2_cropped, 35, 54, 115, 54 + dim(sprite2_cropped)[1], interpolate = FALSE)
 rasterImage(sprite1, 170, 130, 250, 210, interpolate = FALSE)
+
+text(10, 187, pokemon_names[1], pos = 4, cex = 2)
+text(180, 97.5, pokemon_names[2], pos = 4, cex = 2)
+
 grDevices::dev.off()
 
 ## set up twitter auth ====
