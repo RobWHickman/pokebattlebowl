@@ -87,6 +87,67 @@ second_pokemon_adjusted_stats <- mapply(
 )
 names(second_pokemon_adjusted_stats) <- second_pokemon_stat_types
 
+## draw pokemon movesets ====
+levels = c(first_level, chosen_second_level)
+
+pokemon_moves <- lapply(chosen_pokemon_links, function(p) httr::content(httr::GET(p))$moves)
+
+get_df <- function(moves, gen) {
+  
+  df <- do.call(
+    rbind,
+    lapply(
+      moves,
+      function(m) {
+        gen = sapply(m$version_group_details, function(x) x$version_group$name)
+        lvl = sapply(m$version_group_details, function(x) x$level_learned_at)
+        
+        move <- m$move$name
+        url <- m$move$url
+        df <- data.frame(gen, lvl, move, url)
+      }
+    )
+  )
+  
+  gen_df <- df[df$gen == gen,]
+}
+
+gen_moves <- lapply(pokemon_moves, get_df, gen = "gold-silver")
+
+pick_moves <- function(gen_moves, level, n_moves, machine_chance) {
+  learned_moves <- data.frame(
+    gen = NULL,
+    lvl = NULL,
+    move = NULL,
+    url = NULL
+  )
+  
+  for(m in seq(n_moves)) {
+    
+    # by levelling or by moveset
+    if(machine_chance > runif(1)) {
+      moveset <- gen_moves[gen_moves$lvl == 0,]
+    } else {
+      moveset <- gen_moves[gen_moves$lvl > 0 & gen_moves$lvl <= level,]
+    }
+    
+    moveset <- moveset[!moveset$move %in% learned_moves$move,]
+    
+    chosen_move <- moveset[sample(seq(nrow(moveset)), 1),]
+    learned_moves <- rbind(learned_moves, chosen_move)
+  }
+  
+  return(learned_moves)
+}
+
+pokemon_movesets <- mapply(
+  pick_moves,
+  gen_moves,
+  levels,
+  MoreArgs = list(n_moves = 4, machine_chance = 0.1)
+)
+pokemon_movesets <- data.frame(t(pokemon_movesets))
+
 ## get pokemon sprites ====
 
 temp_directory <- tempdir()
@@ -144,7 +205,13 @@ twitter_token <- rtweet::create_token(
   access_secret =   Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 )
 
-tweettext <- paste0(pokemon_names[2], " vs. ", pokemon_names[1], "!!!")
+tweettext <- paste0(
+  pokemon_names[2], " vs. ", pokemon_names[1], "!!!",
+  "\n",
+  pokemon_names[2], " knows ", gsub("-", " ", paste(pokemon_movesets$move[[2]], collapse = ", ")),
+  "\n",
+  pokemon_names[1], " knows ", gsub("-", " ", paste(pokemon_movesets$move[[1]], collapse = ", "))
+)
 
 rtweet::post_tweet(
   status = tweettext,
