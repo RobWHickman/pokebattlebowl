@@ -133,8 +133,10 @@ pick_moves <- function(gen_moves, level, n_moves, machine_chance) {
     
     moveset <- moveset[!moveset$move %in% learned_moves$move,]
     
-    chosen_move <- moveset[sample(seq(nrow(moveset)), 1),]
-    learned_moves <- rbind(learned_moves, chosen_move)
+    if(nrow(moveset) > 0) {
+      chosen_move <- moveset[sample(seq(nrow(moveset)), 1),]
+      learned_moves <- rbind(learned_moves, chosen_move)
+    }
   }
   
   return(learned_moves)
